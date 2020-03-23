@@ -1,7 +1,8 @@
 axios.get('data.csv').then(function(response){
     csv({
         colParser: {
-            'Unit Cost':'number'
+            'Unit Cost':'number',
+            'Total':'number'
         }
     }).fromString(response.data).then(function(data){
         let cf = crossfilter(data);
@@ -52,6 +53,19 @@ axios.get('data.csv').then(function(response){
         console.log("SHOW ALL PENCIL SALES DONE BY ANYONE BUT JONES -->");
         salesPersonDimension.filter( r => r != "Jones");
         console.table(salesPersonDimension.top(50));
+
+        // reset the filter
+        salesPersonDimension.filterAll();
+        itemDimension.filterAll();
+
+        // Q2:
+        console.log("<--Question 2-->")
+        let totalDimension = cf.dimension(data => data.Total);
+        console.table(totalDimension.top(5));
+        console.table(totalDimension.bottom(5));
+
+        totalDimension.filter(r => r > 50);
+        console.table(totalDimension.top(50));
 
 
     })

@@ -1,7 +1,12 @@
 let csvOptions = {
+    checkType:true,
     colParser: {
-        'Units':'Number'  // the Units column is meant to store numerical data
+        'Total':function(item) {
+            // the replace is part known as 'regular expressions'
+            return parseFloat(item.trim().replace(/,/g, ''));
+        }
     }
+
 }
 
 axios.get('data.csv').then(function(response){
@@ -49,6 +54,21 @@ axios.get('data.csv').then(function(response){
 
         console.log("REMOVING FILTER----");
         sold50OrMore.filterAll();
+
+        // GROUP BY ITEM NAME
+        let itemDimension = cf.dimension(r => r.Item);
+        let itemGroup  = itemDimension.group();
+
+        console.table(itemDimension.top(50));
+
+        itemGroup.reduceSum(r => r.Units) // for each group, add the Units column for all the rows
+        console.table(itemGroup.top(10));
+
+        // GROUP BY REP
+        let repDimension = cf.dimension(r=>r.Rep);
+        let repGroup = repDimension.group();
+        repGroup.reduceSum(r => r.Total);
+        console.table(repGroup.top(20));
 
 
     })

@@ -34,13 +34,17 @@ axios.get('transactions.json').then(function(response){
     .yAxis().ticks(4);
 
     dc.pieChart('#pie-chart')
-    .linearColors(["#4575b4", "#ffffbf", "#a50026"])
+    .colors(d3.scaleOrdinal().domain(["Alice", "Bob", "Tom"]).range(['red', 'green', 'blue']))
+    .colorAccessor(function(d){
+        return d.key;
+    })
     .height(300)
     .radius(90)
     .dimension(personDimension)
     .group(personSpending)
     
 
+    let barColorCount = 0;
     dc.barChart('#bar-chart')
     .width(300)
     .height(150)
@@ -48,7 +52,10 @@ axios.get('transactions.json').then(function(response){
     .dimension(personDimension)
     .group(personSpending)
     .x(d3.scaleOrdinal())
-    .colors(['red', 'green', 'blue'])
+    .colors(d3.scaleOrdinal().domain([0,1,2,3]).range(['red', 'green', 'blue']))
+    .colorAccessor(function(d){
+        return barColorCount++ % 2;
+    })
     .xUnits(dc.units.ordinal)
     .xAxisLabel("Person")
     .yAxis().ticks(5);

@@ -26,6 +26,7 @@ axios.get('transactions.json').then(function(response){
     dc.lineChart('#graph')
     .width(1000)
     .height(300)
+    .colors(['green'])
     .margins({top: 10, right:50, bottom:30, left:50})
     .dimension(dateDimension)
     .group(monthlySpend)
@@ -36,6 +37,7 @@ axios.get('transactions.json').then(function(response){
     dc.pieChart('#pie-chart')
     .colors(d3.scaleOrdinal().domain(["Alice", "Bob", "Tom"]).range(['red', 'green', 'blue']))
     .colorAccessor(function(d){
+        console.log(d);
         return d.key;
     })
     .height(300)
@@ -52,9 +54,12 @@ axios.get('transactions.json').then(function(response){
     .dimension(personDimension)
     .group(personSpending)
     .x(d3.scaleOrdinal())
-    .colors(d3.scaleOrdinal().domain([0,1,2,3]).range(['red', 'green', 'blue']))
+    .colors(d3.scaleOrdinal().domain([0,1, 2]).range(['rgb(255,0,0)', 'green', 'blue']))
     .colorAccessor(function(d){
-        return barColorCount++ % 2;
+        let oldValue = barColorCount;
+        barColorCount = barColorCount +1;
+        return oldValue % 3;
+        // return barColorCount++ % 2;
     })
     .xUnits(dc.units.ordinal)
     .xAxisLabel("Person")
